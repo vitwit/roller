@@ -96,6 +96,7 @@ func GetInitConfig(
 	cfg.HubData = hub
 
 	// cfg.RollerVersion = version.TrimVersionStr(version.BuildVersion)
+	// cfg.RollappID = "rollappevm_1234-1"
 	// cfg.RollappID = raID
 	// cfg.Denom = raBaseDenom
 

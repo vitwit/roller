@@ -23,10 +23,8 @@ import (
 	"github.com/dymensionxyz/roller/utils/filesystem"
 	"github.com/dymensionxyz/roller/utils/healthagent"
 	"github.com/dymensionxyz/roller/utils/logging"
-	"github.com/dymensionxyz/roller/utils/migrations"
 	"github.com/dymensionxyz/roller/utils/roller"
 	sequencerutils "github.com/dymensionxyz/roller/utils/sequencer"
-	"github.com/dymensionxyz/roller/utils/upgrades"
 )
 
 // var OneDaySequencePrice = big.NewInt(1)
@@ -73,21 +71,21 @@ Consider using 'services' if you want to run a 'systemd' service instead.
 				return
 			}
 
-			if rollappConfig.HubData.ID != consts.MockHubID {
-				raUpgrade, err := upgrades.NewRollappUpgrade(string(rollappConfig.RollappVMType))
-				if err != nil {
-					pterm.Error.Println("failed to check rollapp version equality: ", err)
-				}
+			if rollappConfig.HubData.ID != consts.MockHubID { //TODO : enable it if required
+				// raUpgrade, err := upgrades.NewRollappUpgrade(string(rollappConfig.RollappVMType))
+				// if err != nil {
+				// 	pterm.Error.Println("failed to check rollapp version equality: ", err)
+				// }
 
-				err = migrations.RequireRollappMigrateIfNeeded(
-					raUpgrade.CurrentVersionCommit,
-					rollappConfig.RollappBinaryVersion,
-					string(rollappConfig.RollappVMType),
-				)
-				if err != nil {
-					pterm.Error.Println(err)
-					return
-				}
+				// err = migrations.RequireRollappMigrateIfNeeded(
+				// 	raUpgrade.CurrentVersionCommit,
+				// 	rollappConfig.RollappBinaryVersion,
+				// 	string(rollappConfig.RollappVMType),
+				// )
+				// if err != nil {
+				// 	pterm.Error.Println(err)
+				// 	return
+				// }
 			}
 
 			seq := sequencer.GetInstance(rollappConfig)
@@ -211,30 +209,29 @@ func PrintOutput(
 
 	if isHealthy {
 		seqAddrData, err := sequencerutils.GetSequencerData(rlpCfg)
-		daManager := datalayer.NewDAManager(consts.Celestia, rlpCfg.Home)
-		celAddrData, errCel := daManager.GetDAAccData(rlpCfg)
 		if err != nil {
+			return
+		}
+		// daManager := datalayer.NewDAManager(consts.Celestia, rlpCfg.Home)
+		daManager := datalayer.NewDAManager(consts.Avail, rlpCfg.Home)
+		// fmt.Println("da manager.....", daManager, rlpCfg, rlpCfg.Home)
+		availAddrData, errCel := daManager.GetDAAccData(rlpCfg)
+		fmt.Println("avail address:: and error", availAddrData, errCel)
+		if errCel != nil {
+			pterm.Error.Println("failed to retrieve DA address") // here check
 			return
 		}
 
-		if err != nil {
-			return
-		}
 		pterm.DefaultSection.WithIndentCharacter("💈").
 			Println("Wallet Info:")
-		fmt.Println("Sequencer Address:", seqAddrData[0].Address)
+		fmt.Println("Sequencer Address:", seqAddrData[0].Address, seqAddrData[0].Balance.String())
 		if withBalance && rlpCfg.NodeType == "sequencer" {
 			fmt.Println("Sequencer Balance:", seqAddrData[0].Balance.String())
 		}
 
-		if errCel != nil {
-			pterm.Error.Println("failed to retrieve DA address")
-			return
-		}
-
-		fmt.Println("Da Address:", celAddrData[0].Address)
+		// fmt.Println("Da Address:", availAddrData[0].Address)
 		if withBalance && rlpCfg.NodeType == "sequencer" && rlpCfg.HubData.ID != "mock" {
-			fmt.Println("Da Balance:", celAddrData[0].Balance.String())
+			fmt.Println("Da Balance:", availAddrData[0].Balance.String())
 		}
 	}
 }

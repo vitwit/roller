@@ -47,6 +47,7 @@ func Cmd() *cobra.Command {
 				)
 			}
 			damanager := datalayer.NewDAManager(rollerData.DA.Backend, rollerData.Home)
+			fmt.Println("da manager here....", damanager)
 
 			if rollerData.NodeType == "sequencer" {
 				pterm.Info.Println("checking for da address balance")
@@ -73,6 +74,8 @@ func Cmd() *cobra.Command {
 				)
 			}
 
+			fmt.Println("** start dalc command update***", startDALCCmd)
+
 			LogFilePath = logging.GetDALogFilePath(rollerData.Home)
 			LCEndpoint = damanager.GetLightNodeEndpoint()
 			ctx, cancel := context.WithCancel(context.Background())
@@ -96,7 +99,7 @@ func Cmd() *cobra.Command {
 
 func addFlags(cmd *cobra.Command) {
 	cmd.Flags().
-		StringP(rpcEndpointFlag, "", "mocha-4-consensus.mesa.newmetric.xyz", "The DA rpc endpoint to connect to.")
+		StringP(rpcEndpointFlag, "", "http://localhost:8000", "The DA rpc endpoint to connect to.") // TODO : change the DA rpc if required
 	cmd.Flags().
 		StringP(metricsEndpointFlag, "", "", "The OTEL collector metrics endpoint to connect to.")
 }

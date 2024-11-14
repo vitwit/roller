@@ -7,12 +7,9 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"slices"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/pterm/pterm"
 
 	"github.com/dymensionxyz/roller/cmd/services/load"
 	"github.com/dymensionxyz/roller/cmd/services/restart"
@@ -20,6 +17,8 @@ import (
 	"github.com/dymensionxyz/roller/utils/dymint"
 	"github.com/dymensionxyz/roller/utils/errorhandling"
 	"github.com/dymensionxyz/roller/utils/roller"
+	"github.com/pterm/pterm"
+	"golang.org/x/exp/slices"
 )
 
 func Start(home string, l *log.Logger) {
@@ -27,9 +26,9 @@ func Start(home string, l *log.Logger) {
 		var healthy bool
 		localEndpoint := "localhost"
 		defaultRaMetricPort := "2112"
-		localDaRpcEndpoint := fmt.Sprintf("http://%s:%s", localEndpoint, "26658")
+		localDaRpcEndpoint := fmt.Sprintf("http://%s:%s", localEndpoint, "8000") // Change the endpoint if it's different than local rpc
 
-		isDaNodeHealthy, _ := IsEndpointHealthy(localDaRpcEndpoint)
+		isDaNodeHealthy, _ := IsAvailNodeHealthy(localDaRpcEndpoint)
 		healthy = isDaNodeHealthy
 
 		submissions, err := QueryFailedDaSubmissions(localEndpoint, defaultRaMetricPort)
@@ -41,7 +40,7 @@ func Start(home string, l *log.Logger) {
 			healthy = false
 		}
 
-		// TODO: improve the node swapping, add health checks before swapping etc.
+		// // TODO: improve the node swapping, add health checks before swapping etc.
 		if !healthy {
 			rollerData, err := roller.LoadConfig(home)
 			errorhandling.PrettifyErrorIfExists(err)
@@ -89,6 +88,48 @@ func Start(home string, l *log.Logger) {
 		healthy = true
 		time.Sleep(15 * time.Second)
 	}
+}
+
+func IsAvailNodeHealthy(url string) (bool, any) {
+	statusURL := fmt.Sprintf(url+"%s", "/v1/status")
+	resp, err := http.Get(statusURL)
+	if err != nil {
+		msg := fmt.Sprintf("Error making request: %v\n", err)
+		return false, msg
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		msg := fmt.Sprintf("Error reading response body: %v\n", err)
+		return false, msg
+	}
+	// nolint:errcheck,gosec
+	resp.Body.Close()
+
+	var response availStatus
+	if json.Valid(body) {
+		err = json.Unmarshal(body, &response)
+		if err != nil {
+			msg := fmt.Sprintf("Error unmarshaling JSON: %v\n", err)
+			return false, msg
+		}
+	} else {
+		return false, "invalid json"
+	}
+
+	fmt.Println("avail node health status....", response)
+
+	if response.BlockNumber != 0 {
+		return true, "not healthy"
+	}
+
+	return true, "healthy"
+
+}
+
+type availStatus struct {
+	BlockNumber int `json:"block_number"`
+	AppID       int `json:"app_id"`
 }
 
 func IsEndpointHealthy(url string) (bool, any) {

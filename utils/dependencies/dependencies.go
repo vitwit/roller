@@ -107,10 +107,11 @@ func InstallBinaries(withMockDA bool, raResp rollapp.ShowRollappResponse) (
 		if raVmType == "evm" {
 			buildableDeps["rollapp"] = types.Dependency{
 				DependencyName:  "rollapp",
-				RepositoryOwner: "dymensionxyz",
+				RepositoryOwner: "vitwit",
 				RepositoryName:  "rollapp-evm",
-				RepositoryUrl:   "https://github.com/dymensionxyz/rollapp-evm.git",
-				Release:         raBinCommit,
+				RepositoryUrl:   "https://github.com/vitwit/rollapp-evm.git",
+				// Release:         raBinCommit,
+				Release: "main",
 				Binaries: []types.BinaryPathPair{
 					{
 						Binary:            "./build/rollapp-evm",
