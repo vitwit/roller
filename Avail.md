@@ -14,7 +14,12 @@ make build && make install
 
 Follow the steps in the (official doc)https://github.com/vitwit/roller/tree/add_avail_support1, with the additional adjustments specified below.
 
-After executing `./build/roller rollapp init`, modify the `avail.toml` file with appropriate values. This file is located at `$HOME/.roller/da-light-node/avail.toml`. Use the following configuration as an example:
+init the rollapp
+
+```bash 
+./build/roller rollapp init
+```
+After executing this command modify the `avail.toml` file with appropriate values. This file is located at `$HOME/.roller/da-light-node/avail.toml`. Use the following configuration as an example:
 ```bash
 AccAddress = ""
 AppID = 1n
@@ -23,7 +28,12 @@ Root = ""
 RpcEndpoint = "ws://127.0.0.1:9944"
 ```
 
-After running `./build/roller rollapp setup`, verify and replace the fields in the `dymint.toml` file, which is located at `$HOME/.roller/rollapp/config/dymint.toml`. The configuration should look like the example below:
+setup the rollapp
+
+```bash 
+./build/roller rollapp setup
+```
+After executing the above command verify and replace the fields in the `dymint.toml` file, which is located at `$HOME/.roller/rollapp/config/dymint.toml`. The configuration should look like the example below:
 ```bash
 da_config = "{\"seed\": \"bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice\", \"api_url\": \"ws://127.0.0.1:9944\", \"app_id\": 1, \"tip\":0}"
 max_proof_time = "1s"
@@ -37,8 +47,9 @@ da_layer = "avail"
 ```
 
 After making the above changes, you can run the following commands to register and start the services, including the DA light client:
-``bash
+```bash
 ./build/roller rollapp services load
+
 ./build/roller rollapp services start
 ```
 
