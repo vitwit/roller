@@ -204,9 +204,18 @@ RollApp's IRO time: %v`,
 				)
 
 				if !isSequencerRegistered {
-					minBond, _ := sequencer.GetMinSequencerBondInBaseDenom(rollappConfig.HubData)
+					minBond, err := sequencer.GetMinSequencerBondInBaseDenom(
+						rollappConfig.RollappID,
+						rollappConfig.HubData,
+					)
+					if err != nil {
+						pterm.Error.Println("failed to get min bond: ", err)
+						return
+					}
+
 					var bondAmount cosmossdktypes.Coin
 					bondAmount.Denom = consts.Denoms.Hub
+
 					floatDenomRepresentation := displayRegularDenom(*minBond, 18)
 					displayDenom := fmt.Sprintf(
 						"%s%s",
@@ -647,7 +656,6 @@ RollApp's IRO time: %v`,
 			switch nodeType {
 			case "sequencer":
 				pterm.Info.Println("checking DA account balance")
-				// damanager = datalayer.NewDAManager(consts.Avail, home) // TODO : if facing error then uncomment this line
 				insufficientBalances, err := damanager.CheckDABalance()
 				if err != nil {
 					pterm.Error.Println("failed to check balance", err)
@@ -720,20 +728,19 @@ RollApp's IRO time: %v`,
 			}
 
 			if rollappConfig.DA.Backend == consts.Celestia {
-				// daNamespace := damanager.DataLayer.GetNamespaceID()
-				// if daNamespace == "" {
-				// 	pterm.Error.Println("failed to retrieve da namespace id")
-				// 	return
-				// }
+				daNamespace := damanager.DataLayer.GetNamespaceID()
+				if daNamespace == "" {
+					pterm.Error.Println("failed to retrieve da namespace id")
+					return
+				}
 			}
 
 			pterm.Info.Println("updating dymint configuration")
 
-			// fmt.Println("error while writing da layer....", err)
 			// _ = tomlconfig.UpdateFieldInFile(
 			// 	dymintConfigPath,
 			// 	"namespace_id",
-			// 	1, // TODO: change it to daNamespace if da is celestia
+			// 	daNamespace, // TODO: change it to daNamespace if da is celestia
 			// )
 			_ = tomlconfig.UpdateFieldInFile(
 				dymintConfigPath,
