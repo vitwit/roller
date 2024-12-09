@@ -254,7 +254,8 @@ func InstallBinaryFromRepo(dep types.Dependency, td string) error {
 	if strings.HasPrefix(dep.Release, "v") {
 		buildSource = dep.Release
 	} else {
-		buildSource = dep.Release[:6]
+		// buildSource = dep.Release[:6]
+		buildSource = "main"
 	}
 
 	spinner.UpdateText(
