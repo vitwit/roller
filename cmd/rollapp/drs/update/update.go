@@ -11,6 +11,7 @@ import (
 	initconfig "github.com/dymensionxyz/roller/cmd/config/init"
 	"github.com/dymensionxyz/roller/cmd/consts"
 	"github.com/dymensionxyz/roller/utils/archives"
+	"github.com/dymensionxyz/roller/utils/config/tomlconfig"
 	"github.com/dymensionxyz/roller/utils/dependencies"
 	dymintutils "github.com/dymensionxyz/roller/utils/dymint"
 	"github.com/dymensionxyz/roller/utils/filesystem"
@@ -57,8 +58,8 @@ func Cmd() *cobra.Command {
 
 			drsVersion, err := rollapputils.ExtractDrsVersionFromBinary()
 			if err != nil {
-				pterm.Error.Println("Failed to extract drs version from binary:", err)
-				return
+				pterm.Warning.Println("Failed to extract drs version from binary:", err)
+				pterm.Info.Println("Installing the latest version", err)
 			}
 
 			drsInfo, err := firebaseutils.GetLatestDrsVersionCommit(drsVersion)
@@ -141,6 +142,16 @@ func Cmd() *cobra.Command {
 
 			// wait for healthy endpoint
 			dymintutils.WaitForHealthyRollApp("http://localhost:26657/health")
+
+			err = tomlconfig.UpdateFieldInFile(
+				filepath.Join(home, "roller.toml"),
+				"rollapp_binary_version",
+				raCommit,
+			)
+			if err != nil {
+				pterm.Error.Println("failed to update rollapp binary version in config: ", err)
+				return
+			}
 
 			pterm.Success.Println("update complete")
 		},
