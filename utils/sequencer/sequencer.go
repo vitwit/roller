@@ -80,7 +80,9 @@ func Register(raCfg roller.RollappConfig, desiredBond cosmossdktypes.Coin) error
 		return err
 	}
 	fp := filepath.Join(home, string(pswFileName))
+	fmt.Println("fpp........", fp)
 	psw, err := filesystem.ReadFromFile(fp)
+	fmt.Println("psww.......", psw)
 	if err != nil {
 		return err
 	}
@@ -95,8 +97,13 @@ func Register(raCfg roller.RollappConfig, desiredBond cosmossdktypes.Coin) error
 			pterm.Yellow(pterm.Bold.Sprint(displayBond.String())),
 		),
 	}
+	fmt.Println("tx detaiils.......", consts.Executables.Dymension,
+		args,
+		automaticPrompts,
+		manualPromptResponses)
+
 	txOutput, err := bash.ExecuteCommandWithPromptHandler(
-		consts.Executables.Dymension,
+		"dymd",
 		args,
 		automaticPrompts,
 		manualPromptResponses,
@@ -104,6 +111,8 @@ func Register(raCfg roller.RollappConfig, desiredBond cosmossdktypes.Coin) error
 	if err != nil {
 		return err
 	}
+
+	fmt.Println("tx output and error..........", txOutput, err)
 
 	txHash, err := bash.ExtractTxHash(txOutput.String())
 	if err != nil {

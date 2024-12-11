@@ -656,6 +656,11 @@ RollApp's IRO time: %v`,
 			switch nodeType {
 			case "sequencer":
 				pterm.Info.Println("checking DA account balance")
+				// damanager := datalayer.NewDAManager(
+				// 	rollappConfig.DA.Backend,
+				// 	rollappConfig.Home,
+				// 	rollappConfig.KeyringBackend,
+				// )
 				insufficientBalances, err := damanager.CheckDABalance()
 				if err != nil {
 					pterm.Error.Println("failed to check balance", err)

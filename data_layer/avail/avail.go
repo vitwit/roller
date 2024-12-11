@@ -47,6 +47,7 @@ func (a *Avail) SetMetricsEndpoint(endpoint string) {
 func NewAvail(root string) *Avail {
 	cfgPath := GetCfgFilePath(root)
 	availConfig, err := loadConfigFromTOML(cfgPath)
+	fmt.Println("avail config hereee.......", availConfig)
 	if err != nil {
 		entropySeed, err := bip39.NewEntropy(mnemonicEntropySize)
 		if err != nil {
@@ -58,7 +59,7 @@ func NewAvail(root string) *Avail {
 			panic(err)
 		}
 
-		// availConfig.Mnemonic = "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice"
+		availConfig.Mnemonic = "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice"
 		availConfig.RpcEndpoint = DefaultRPCEndpoint // ws://127.0.0.1:9944
 		availConfig.AppID = AppID
 
@@ -97,6 +98,8 @@ func (c *Avail) GetRootDirectory() string {
 }
 
 func (a *Avail) CheckDABalance() ([]keys.NotFundedAddressData, error) {
+	fmt.Println("a.add.........", a.AccAddress)
+	// a.AccAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
 	balance, err := a.getBalance()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get DA balance: %w", err)
@@ -133,6 +136,8 @@ func (a *Avail) getBalance() (availtypes.U128, error) {
 		return res, err
 	}
 
+	// a.Mnemonic = "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice"
+
 	keyringPair, err := signature.KeyringPairFromSecret(a.Mnemonic, keyringNetworkID)
 	if err != nil {
 		return res, err
@@ -159,6 +164,9 @@ func (a *Avail) GetStartDACmd() *exec.Cmd {
 }
 
 func (a *Avail) GetDAAccData(cfg roller.RollappConfig) ([]keys.AccountData, error) {
+	fmt.Println("configgg........", cfg, "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY")
+	// a.Mnemonic = "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice"
+	// a.AccAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
 	balance, err := a.getBalance()
 	if err != nil {
 		return nil, err
