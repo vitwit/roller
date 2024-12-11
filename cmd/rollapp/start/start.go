@@ -88,7 +88,6 @@ Consider using 'services' if you want to run a 'systemd'(unix) or 'launchd'(mac)
 
 			seq := sequencer.GetInstance(rollappConfig)
 			startRollappCmd := seq.GetStartCmd(logLevel, rollappConfig.KeyringBackend)
-
 			fmt.Println(startRollappCmd.String())
 
 			rollerLogger := logging.GetRollerLogger(rollappConfig.Home)
@@ -146,7 +145,6 @@ Consider using 'services' if you want to run a 'systemd'(unix) or 'launchd'(mac)
 
 					done <- err
 				}()
-
 				select {
 				case err := <-done:
 					if err != nil {
@@ -170,14 +168,12 @@ Consider using 'services' if you want to run a 'systemd'(unix) or 'launchd'(mac)
 
 func PrintOutput(
 	rlpCfg roller.RollappConfig,
-	pid string,
 	withBalance,
 	withEndpoints,
 	withProcessInfo,
 	isHealthy bool,
 	dymintNodeID string,
 ) {
-	logPath := filepath.Join(rlpCfg.Home, consts.ConfigDirName.Rollapp, "rollapp.log")
 	rollappDirPath := filepath.Join(rlpCfg.Home, consts.ConfigDirName.Rollapp)
 	fmt.Println("log file path.......", logPath, rollappDirPath)
 
@@ -228,12 +224,10 @@ func PrintOutput(
 	pterm.DefaultSection.WithIndentCharacter("💈").
 		Println("Filesystem Paths:")
 	fmt.Println("Rollapp root dir: ", rollappDirPath)
-	fmt.Println("Log file path: ", logPath)
 
 	if withProcessInfo {
 		pterm.DefaultSection.WithIndentCharacter("💈").
 			Println("Process Info:")
-		fmt.Println("PID:", pid)
 		fmt.Println("OS:", runtime.GOOS)
 		fmt.Println("Architecture:", runtime.GOARCH)
 	}
