@@ -47,7 +47,6 @@ func (a *Avail) SetMetricsEndpoint(endpoint string) {
 func NewAvail(root string) *Avail {
 	cfgPath := GetCfgFilePath(root)
 	availConfig, err := loadConfigFromTOML(cfgPath)
-	fmt.Println("avail config hereee.......", availConfig)
 	if err != nil {
 		entropySeed, err := bip39.NewEntropy(mnemonicEntropySize)
 		if err != nil {
@@ -59,7 +58,7 @@ func NewAvail(root string) *Avail {
 			panic(err)
 		}
 
-		availConfig.Mnemonic = "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice"
+		// availConfig.Mnemonic = "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice"
 		availConfig.RpcEndpoint = DefaultRPCEndpoint // ws://127.0.0.1:9944
 		availConfig.AppID = AppID
 
@@ -98,7 +97,7 @@ func (c *Avail) GetRootDirectory() string {
 }
 
 func (a *Avail) CheckDABalance() ([]keys.NotFundedAddressData, error) {
-	fmt.Println("a.add.........", a.AccAddress)
+	fmt.Println("addresss.........", a.AccAddress)
 	// a.AccAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
 	balance, err := a.getBalance()
 	if err != nil {
@@ -164,7 +163,7 @@ func (a *Avail) GetStartDACmd() *exec.Cmd {
 }
 
 func (a *Avail) GetDAAccData(cfg roller.RollappConfig) ([]keys.AccountData, error) {
-	fmt.Println("configgg........", cfg, "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY")
+	// fmt.Println("configgg........", cfg, "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY")
 	// a.Mnemonic = "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice"
 	// a.AccAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
 	balance, err := a.getBalance()

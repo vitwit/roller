@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	initconfig "github.com/dymensionxyz/roller/cmd/config/init"
+	"github.com/dymensionxyz/roller/cmd/consts"
 	"github.com/dymensionxyz/roller/cmd/rollapp/start"
 	"github.com/dymensionxyz/roller/utils/dymint"
 	"github.com/dymensionxyz/roller/utils/healthagent"

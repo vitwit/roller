@@ -175,7 +175,6 @@ func PrintOutput(
 	dymintNodeID string,
 ) {
 	rollappDirPath := filepath.Join(rlpCfg.Home, consts.ConfigDirName.Rollapp)
-	fmt.Println("log file path.......", logPath, rollappDirPath)
 
 	seq := sequencer.GetInstance(rlpCfg)
 
