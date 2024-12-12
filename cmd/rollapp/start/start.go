@@ -231,20 +231,15 @@ func PrintOutput(
 		fmt.Println("Architecture:", runtime.GOARCH)
 	}
 
-	fmt.Println("is healthyyyyyyyy........", isHealthy)
-
 	if isHealthy {
 		seqAddrData, err := sequencerutils.GetSequencerData(rlpCfg)
 		daManager := datalayer.NewDAManager(consts.Avail, rlpCfg.Home, rlpCfg.KeyringBackend) // avail as a da
-		fmt.Println("home and backend.........", consts.Avail, rlpCfg.Home, rlpCfg.KeyringBackend)
-		fmt.Println("da manager heree.........", daManager, rlpCfg.KeyringBackend, err)
 		availAddrData, errCel := daManager.GetDAAccData(rlpCfg)
-		fmt.Println("avail configggg........", rlpCfg.DA)
 		if err != nil {
 			return
 		}
 
-		fmt.Println("avail address:: and error", availAddrData, errCel)
+		fmt.Println("avail address::", availAddrData)
 		if errCel != nil {
 			pterm.Error.Println("failed to retrieve DA address") // here check
 			return

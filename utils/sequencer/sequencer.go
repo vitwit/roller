@@ -97,7 +97,7 @@ func Register(raCfg roller.RollappConfig, desiredBond cosmossdktypes.Coin) error
 	}
 
 	txOutput, err := bash.ExecuteCommandWithPromptHandler(
-		consts.Executables.Dymension,
+		"dymd", // consts.Executables.Dymension,
 		args,
 		automaticPrompts,
 		manualPromptResponses,

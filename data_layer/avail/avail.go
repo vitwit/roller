@@ -97,8 +97,6 @@ func (c *Avail) GetRootDirectory() string {
 }
 
 func (a *Avail) CheckDABalance() ([]keys.NotFundedAddressData, error) {
-	fmt.Println("addresss.........", a.AccAddress)
-	// a.AccAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
 	balance, err := a.getBalance()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get DA balance: %w", err)
@@ -163,9 +161,6 @@ func (a *Avail) GetStartDACmd() *exec.Cmd {
 }
 
 func (a *Avail) GetDAAccData(cfg roller.RollappConfig) ([]keys.AccountData, error) {
-	// fmt.Println("configgg........", cfg, "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY")
-	// a.Mnemonic = "bottom drive obey lake curtain smoke basket hold race lonely fit walk//Alice"
-	// a.AccAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
 	balance, err := a.getBalance()
 	if err != nil {
 		return nil, err
