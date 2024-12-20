@@ -91,15 +91,85 @@ Once all previous steps are complete, start the roller with:
 
 These are the required changes to verify before starting the Rollapp. Please follow the instructions above carefully before starting roller.
 
-**Note**: If you encounter the issue of a negative registration fee when starting the roller, update the registration_fee field in the erc20 params section of your genesis.json file as shown below:
+## Migrate RollApp to another server
 
-```json 
-"erc20": {
-  "params": {
-    "enable_erc20": true,
-    "enable_evm_hook": true,
-    "registration_fee": "1000000000000000000"
-  },
-  "token_pairs": []
-}
+To migrate the rollapp to another server follow these instructions
+
+Compress the .roller folder:
+
+```sh
+sudo tar -cvf - .roller | lz4 > copyroller.tar.lz4
 ```
+
+Copy copyroller.tar.lz4 to the new server and extract it:
+
+```sh
+scp copyroller.tar.lz4 user@new-server:/path/to/destination
+```
+
+```sh
+lz4 -c -d copyroller.tar.lz4 | tar -x -C .
+```
+
+Modify the file `.roller/rollapp/config/dymint.toml` and change the user of the new server, if necessary:
+
+```sh
+keyring_home_dir = "/home/user/.roller/hub-keys"
+```
+
+Modify the file `.roller/roller.toml` and change the home path of the new server, if necessary:
+
+```sh
+home = "/home/user/.roller"
+```
+
+Migrate the dependencies downloaded locally during the roller init command. If the dependency versions differ, ensure that the correct versions are also migrated.
+
+```sh
+tar --absolute-names -czvf rollapp-binaries.tar.gz /usr/local/bin/dymd /usr/local/bin/rollapp-evm
+```
+
+```sh
+ scp rollapp-binaries.tar.gz user@new-server:/path/to/destination
+ ```
+
+Extract the binaries on the new server:
+
+ ```sh
+ tar --absolute-names -xzvf rollapp-binaries.tar.gz -C /usr/local/bin/
+ ```
+
+Verify the updated versions:
+
+ ```sh
+ dymd version
+ rollapp-evm version
+ ```
+
+**Note**: When running the RollApp, the Dymension node to which it is registered must also be migrated when moving from a local server to another server.
+Compress .dymension folder:
+
+```sh
+sudo tar -cvf - .dymension | lz4 > copydymension.tar.lz4
+```
+
+Copy copydymension.tar.lz4 to new server and unzip it:
+
+```sh
+scp copydymension.tar.lz4 user@new-server:/path/to/destination
+```
+
+```sh
+lz4 -c -d copydymension.tar.lz4 | tar -x -C .
+```
+
+```sh
+dymd start
+```
+
+After making the necessary changes, you can start the RollApp using the following command:
+
+```sh
+./build/roller rollapp start
+```
+
